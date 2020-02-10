@@ -12,19 +12,13 @@ const backToTopBtn = document.querySelector('.back-to-top');
 
 
 // statistics
-const statisticsWrapper = document.querySelector('.statistics-countries__wrapper');
+const worldBarContainer = document.querySelector('.world-bar__container');
+const statisticsWrapper = document.querySelector('.stats-container');
 const btnStatsContainer = document.querySelector('.statistics-btn__container');
 const displayPopulationBtn = document.querySelector('.pop-btn');
 const displayLanguagesBtn = document.querySelector('.lang-btn');
 const displayText = document.querySelector('.text-paragraph');
 
-
-let countryContainer,
-     countryFlag,
-     countryName,
-     countryCapital,
-     countryLanguages,
-     countryPopulation;
 
 let arrowName = document.getElementById('arrow-name');
 let arrowCapital = document.getElementById('arrow-capital');
@@ -35,9 +29,7 @@ form.addEventListener('submit', (e) => {
     e.preventDefault();
 });
 
-const createNode = (e) => {
-    return document.createElement(e);
-};
+
 
 //adds a flag that toggles whether the countries are sort ascending or descending
 let flag = false;
@@ -59,49 +51,19 @@ const calculateWorldPopulation = () => {
 }
 
 
-const createCountry = () => {
-    countryContainer = createNode('div');
-    countryFlag = createNode('img');
-    countryName = createNode('h4');
-    countryCapital = createNode('p');
-    countryLanguages = createNode('p');
-    countryPopulation = createNode('p');
-
-    countryContainer.setAttribute('class', 'country-container grow');
-    countryFlag.setAttribute('class', 'flag');
-    countryName.setAttribute('class', 'country-name');
-
-}
-
-const appendCountry = () => {
-    countryContainer.append(countryFlag, countryName, countryCapital, countryLanguages, countryPopulation);
-    countriesWrapper.append(countryContainer);
-}
-
 const createWorldBar = () => {
-
-    let worldDiv = createNode('div');
-    let worldNameDiv = createNode('div');
-    let worldName = createNode('p');
-    let worldPop = createNode('p');
-    let worldBar = createNode('div');
-    worldDiv.setAttribute('class', 'statistics-countries__container')
-    worldName.textContent = 'World';
     let worldPopulation = calculateWorldPopulation();
-    worldBar.style.width = `${worldPopulation/10000000}px`;
-    worldBar.style.height = '40px';
-    worldBar.style.backgroundColor = 'rgb(255, 38, 74)';
-    worldPop.textContent = worldPopulation.toString();
-    worldNameDiv.append(worldName);
-    worldDiv.append(worldNameDiv, worldBar, worldPop);
-    statisticsWrapper.append(worldDiv);
-
+    let content = '';
+    let worldPopWidth = 100
+    content += 
+    `<div class="world-bar__container">
+        <div><p>World</p></div>
+        <div class="world-bar"style ="width: ${worldPopWidth}%"></div>
+        <div><p>${worldPopulation.toString()}</p></div>
+    </div>`
+    worldBarContainer.innerHTML = content;
 } 
 
-const updateStatistics = () => {
-    //update population statistics
-    
-}
     
 const searchByAll = (searchInput) => {
    
@@ -127,13 +89,10 @@ const searchByAll = (searchInput) => {
             countryObj.capital = country.capital;
             countryObj.languages = country.languages;
             countryObj.flag = country.flag;
-            countryObj.population = country.population;
-            
-            
-            // createCountry();
-    
+            countryObj.population = country.population;    
+
             countryArr.push(countryObj);
-      
+
             }
     
             resultParagraph.textContent = `${countryArr.length} countries satisfy the criteria.`
@@ -144,60 +103,49 @@ const searchByAll = (searchInput) => {
     }
 
 
+
 }
     
 
-  
-        
 searchInput.addEventListener('keyup', () => {
     const newArr = searchByAll(searchInput.value)
     displayCountries(newArr);
 });
 
-const displayCountries = (countries) => {
+
+const displayCountries = (arr) => {
+    let countries = [...arr];
     countriesWrapper.textContent = '';
     statisticsWrapper.textContent = '';
+    let contentCountries ='';
+    let contentStatistics ='';
 
     totalCountries.textContent = countries.length;
     createWorldBar();
+    countries.forEach(
+        ({name, flag, capital, languages, population}) =>
 
-    for(const country in countries) {
-        let {name, flag, capital, languages, population} = countries[country];
+        (contentCountries +=
+        `<div class='country-container grow'>
+            <img src="${flag}" class="flag">
+                <h4 class="country-name">${name}</h4>
+                <p>Capital: ${capital}</p>
+                <p>Languages: ${languages}</p>
+                <p>Population: ${population.toString()}</p>
+            </div>`, 
 
-        createCountry();
-        
-        //setting textContent
-        countryFlag.src = `${flag}`;
-        countryName.textContent = `${name}`;
-        countryCapital.textContent = `Capital: ${capital}`;
-        countryLanguages.textContent = `Languages: ${languages}`;
-        countryPopulation.textContent = `Population: ${population.toString()}`;
+            contentStatistics +=
+                `<div class="statistics-countries__container">
+                    <div><p>${name}</p></div>
+                        <div class="country-bar"style ="width: ${population/10000000}px"></div>
+                    <div><p>${population.toString()}</p></div>
+                </div>`)
+    )
     
-        //appendingDivs
-        appendCountry();
+        countriesWrapper.innerHTML = contentCountries; 
+        statisticsWrapper.innerHTML = contentStatistics;
 
-        const countryPopContainer = createNode('div');
-        countryPopContainer.setAttribute('class', 'statistics-countries__container');
-        let countryPopName = createNode('p');
-        let countryNameDiv = createNode('div');
-        let countryBar = createNode('div');
-        countryBar.style.width = `${population/10000000}px`;
-        countryBar.style.height = '40px';
-        countryBar.style.backgroundColor = 'rgb(255, 38, 74)';
-        let countryPop = createNode('p')
-        let countryPopulationDiv = createNode('div');
-        countryPopName.textContent = name;
-        countryPop.textContent = population.toString();
-        countryNameDiv.append(countryPopName);
-        countryPopContainer.append(countryNameDiv, countryBar);
     
-        countryPopulationDiv.append(countryPop);
-        countryPopContainer.append(countryPopulationDiv);
-
-
-        statisticsWrapper.append(countryPopContainer);
-
-    }
 
 }
 
@@ -303,50 +251,37 @@ populationBtnSort.addEventListener('click', sortCountriesByPopulation = () => {
     
 })
 
-//loads the countries
-displayCountries(countries);
-
-
 
 
 const displayTenLargestCountries = () => {
+    let arr = [...countries]
     statisticsWrapper.textContent = "";
-         countries.sort((a, b) => {
+    let stats = '';
+         arr.sort((a, b) => {
              if(a.population > b.population) return -1;
              if(a.population < b.population) return 1;
              return 0;
          })
          
      
-         let sortedCountByPop = countries.slice(0, 10);
+         let sortedCountByPop = arr.slice(0, 10);
          displayText.textContent = `${sortedCountByPop.length} largest countries in the world.`
          createWorldBar();
 
-         for(const country of sortedCountByPop) {
-             let {name, population} = country;     
+         sortedCountByPop.forEach(
+             ({name, population}) => 
              
-            const countryPopContainer = createNode('div');
-            countryPopContainer.setAttribute('class', 'statistics-countries__container');
-            let countryPopName = createNode('p');
-            let countryNameDiv = createNode('div');
-            let countryBar = createNode('div');
-            let worldPopulation = calculateWorldPopulation()
-            countryBar.style.width = `${population/6000000}px`;
-            countryBar.style.height = '40px';
-            countryBar.style.backgroundColor = 'rgb(255, 38, 74)';
-            let countryPop = createNode('p')
-            let countryPopulationDiv = createNode('div');
-            countryPopName.textContent = name;
-            countryPop.textContent = population.toString();
-            countryNameDiv.append(countryPopName);
-            countryPopContainer.append(countryNameDiv, countryBar);
-            
-            countryPopulationDiv.append(countryPop);
-            countryPopContainer.append(countryPopulationDiv);
+             (stats +=
+             `<div class="statistics-countries__container">
+                 <div><p class="populationCountry">${name}</p></div>
+                     <div class="country-bar"style ="width: ${population/6000000}px"></div>
+                 <div><p class="populationNumber">${population.toString()}</p></div>
+             </div>`)
+         )
 
-            statisticsWrapper.append(countryPopContainer);
-     
-         }
+             statisticsWrapper.innerHTML = stats;
+            
+         
 }
 
 const displayTenSpokenLanguages = () => {
@@ -360,7 +295,6 @@ const displayTenSpokenLanguages = () => {
 
 
     }
-    console.log(langArr);
 
     
     let setLang = new Set(langArr);
@@ -371,7 +305,6 @@ const displayTenSpokenLanguages = () => {
         countWords.push({word: w, paragraphWords: filteredWords.length});
     }
 
-    console.log(countWords);
 
     countWords.sort((a, b) => {
         if(a.paragraphWords > b.paragraphWords) return -1;
@@ -380,33 +313,23 @@ const displayTenSpokenLanguages = () => {
     })
 
     let sorted = countWords.slice(0, 10);
-    console.log(sorted);
-    displayText.textContent = `${sorted.length} most spoken languages in the world.`
+    displayText.textContent = `${sorted.length} most spoken languages in the world.`;
+    let langContent = '';
     for(const w of sorted) {
-        let{word, paragraphWords} = w;
-        console.log(word, paragraphWords);
-        const countryContainer = createNode('div');
-             countryContainer.setAttribute('class', 'statistics-countries__container');
-             let languageName = createNode('p');
-             let languageNameDiv = createNode('div');
-             let countryBar = createNode('div');
-             countryBar.style.width = `${paragraphWords*5}px`;
-             countryBar.style.height = '40px';
-             countryBar.style.backgroundColor = 'rgb(255, 38, 74)';
-             let languageCount = createNode('p')
-             let languageCountDiv = createNode('div');
-             languageName.textContent = word;
-             languageCount.textContent = paragraphWords;
-             languageNameDiv.append(languageName);
-             countryContainer.append(languageNameDiv);
-             countryContainer.append(countryBar);
-             
-             languageCountDiv.append(languageCount);
-             countryContainer.append(languageCountDiv);
 
-             statisticsWrapper.append(countryContainer);
+        let {word, paragraphWords} = w;
+
+        langContent +=
+        `<div class="statistics-countries__container">
+            <div><p>${word}</p></div>
+                <div class="country-bar"style ="width: ${paragraphWords*5}px"></div>
+            <div><p>${paragraphWords}</p></div>
+        </div>`
+        statisticsWrapper.innerHTML = langContent;
+
       
     }
+
 }
 
 
@@ -422,6 +345,10 @@ backToTopBtn.addEventListener('click', backToTop = () => {
 })
 
 displayTenLargestCountries();
+
+
+//loads the countries
+document.addEventListener('DOMContentLoaded', displayCountries(countries));
 
 
 

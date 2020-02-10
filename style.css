@@ -9,7 +9,7 @@
     --secondary-red: rgb(233, 19, 55);
 
     --test-red:rgb(204, 46, 73);
-    /* --secondary-red: rgb(240, 92, 34); */ */
+    /* --secondary-red: rgb(240, 92, 34); */ 
 
     /* --primary-red:rgb(130, 77, 253);
     --secondary-red: rgb(88, 53, 170); */
@@ -177,8 +177,8 @@ button:hover {
     padding: 2rem 1rem;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-row-gap: .4rem;
-    grid-column-gap: .4rem;
+    grid-row-gap: .8rem;
+    grid-column-gap: .8rem;
 }
 
 .country-container {
@@ -258,8 +258,31 @@ button:hover {
     margin-top: 2rem;
 }
 
+
+
+.world-bar {
+    height: 40px;
+    background-color: rgb(255, 38, 74);
+    
+}
+
+.country-bar {
+    height: 40px;
+    background-color: rgb(255, 38, 74);
+    
+}
+
+
+
 a {
     padding-top: .8rem;
+}
+
+.world-bar__container {
+    display: grid;
+    grid-template-columns: 44.6% 138% 38%;
+    padding: .5rem;
+    align-items: center;
 }
 
 .statistics-countries__container {
@@ -297,3 +320,69 @@ a {
 
 }
 
+@media screen and (max-width: 1024px) {
+
+    .header-top {
+        padding: 2rem 0rem;
+
+    }
+    
+    .countries-wrapper {
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 1rem;
+        padding: 2rem 3rem;
+    }
+}
+
+@media screen and (max-width: 500px) {
+
+    .header-top {
+        padding: 5rem 0rem;
+    }
+    .title {
+        font-size: 16px;
+
+    }
+
+    .search-input {
+        width: 22rem;
+
+    }
+
+    .buttons-wrapper {
+        flex-direction: column;
+    }
+
+    .btn {
+        margin: .5rem;
+    }
+
+    .name-btn,
+    .capital-btn,
+    .population-btn {
+        padding: .8rem;
+    }
+
+
+
+    .countries-wrapper {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+
+    .country-bar {
+        height: 27px;
+    }
+
+    .pop-btn, 
+    .lang-btn {
+        padding: .6rem;
+
+    }
+    .populationCountry,
+    .populationNumber {
+        font-size: 13px;
+
+    }
+    
+}
